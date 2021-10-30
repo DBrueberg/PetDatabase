@@ -77,4 +77,10 @@ public class Pet {
     public void setAge(int age) {
         this.age = age;
     }
+
+    @Override
+    public Object clone() {
+        Pet newPet = new Pet(this.getName(), this.getAge());
+        return newPet;
+    }
 }
