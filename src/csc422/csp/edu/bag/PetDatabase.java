@@ -3,9 +3,16 @@
  * PetDatabase.java
  * October 25, 2021
  * Updated(Initials, Date, Changes):
+ * *****VERSION 1******
  *  (DAB, 10/30/2021, Added features to view the Pet objects in a table)
  *  (DAB, 10/30/2021, Added features to add Pets to the database)
  *  (DAB, 10/30/2021, Added a menu for user navigation)
+ *
+ * ****VERSION 2******
+ *  (DAB, 10/30/2021, Added in features to search by pet name or age:
+ *  results will be printed in a table)
+ *  (DAB, 10/30/2021, Created overloaded methods for displayTable() that
+ *  allow for the printing of tables based of a name or age search)
  *
  * PetDatabase.java, Pet.java run together for Assignment 1 Part 2
  *
@@ -55,8 +62,6 @@ public class PetDatabase {
 
         // Running the menu and passing in the petDatabase
         mainMenu(petDatabase);
-
-        // Test change
     }
 
 
@@ -105,13 +110,67 @@ public class PetDatabase {
 
 
     /**
-     * The displayPetTable() method will print out a Pet Table according to
-     * the parameters described by the client. It will display every Pet
-     * in the database as well as display the number of Pet objects in
-     * the set.
+     * The overloaded displayPetTable() will accept a petDatabase as a
+     * parameter. It will then make a recursive call to displayPetTable()
+     * and print out every Pet in the database as well as display the number
+     * of Pet objects in the set.
      *
+     * @param petDatabase - ArrayList<Pet> database to print in a table.
      */
     public static void displayPetTable(ArrayList<Pet> petDatabase) {
+        // Recursive call to displayPetTable and passing null as the second
+        // parameter to print the full table
+        displayPetTable(petDatabase, (ArrayList<Integer>)null);
+    }
+
+
+    /**
+     * The overloaded displayPetTable() will accept a petDatabase and an
+     * int age as parameters. It will then make a recursive call to
+     * displayPetTable() after searching the Pet database for Pets that match
+     * the age. It will then print out every Pet in the database that match
+     * that age as well as display the total number of Pet objects found.
+     *
+     * @param petDatabase - ArrayList<Pet> database to print in a table.
+     * @param age - int age of the pets to print.
+     */
+    public static void displayPetTable(ArrayList<Pet> petDatabase, int age) {
+        // Initializing an ArrayList to hold the indices of the Pet objects where
+        // the age matches
+        ArrayList<Integer> indices = new ArrayList<>();
+
+        // Iterating through the petDatabase and comparing the age. If they
+        // match the index is added to the indices List
+        for (int id = 0; id < petDatabase.size(); id++) {
+            // Creating a temp variable to hold the current Pet for readability
+            Pet tempPet = petDatabase.get(id);
+
+            // If the age matches the parameter age, the index is added to indices
+            if (tempPet.getAge() == age) {
+                indices.add(id);
+            }
+        }
+
+        // A recursive call is made to displayPetTable() with the new indices
+        // List and the Pets matching the indices list are printed to the screen
+        displayPetTable(petDatabase, indices);
+    }
+
+
+    /**
+     * The overloaded displayPetTable() is the method that will actually print the
+     * table to the screen. It will accept an ArrayList<Pet> and an ArrayList<Integer>
+     * indices and print the Pet at the specified index locations. If null is passed
+     * for the indices ArrayList, all the Pet objects in the petDatabase will be
+     * printed to the screen. Last the total number of Pet objects in the set will
+     * be printed to the screen.
+     *
+     * @param petDatabase - ArrayList<Pet> database to print in a table.
+     * @param indices - ArrayList<Integer> indices that will reference the indices in the
+     *                petDatabase. If this value is null, the full database is printed to the
+     *                screen.
+     */
+    public static void displayPetTable(ArrayList<Pet> petDatabase, ArrayList<Integer> indices) {
         // Initializing breakLine that will be the breakLine for the table
         String breakLine = "+";
         // Initializing the width of the table by referencing the length of
@@ -130,19 +189,80 @@ public class PetDatabase {
         System.out.println(rowFormat("ID", "NAME", "AGE"));
         System.out.println(breakLine);
 
-        // Iterating through the items in the petDatabase and printing
-        // them out to the screen in the specified rowFormat
-        for (int id = 0; id < petDatabase.size(); id++) {
-            // Initializing the current Pet to tempPet for readability
-            Pet tempPet = petDatabase.get(id);
+        // If the indices parameter is null, the full database will be printed
+        if (indices == null) {
+            // Iterating through the items in the petDatabase and printing
+            // them out to the screen in the specified rowFormat
+            for (int id = 0; id < petDatabase.size(); id++) {
+                // Initializing the current Pet to tempPet for readability
+                Pet tempPet = petDatabase.get(id);
 
-            // Printing out the Pet row in the specified format using rowFormat()
-            System.out.println(rowFormat(id, tempPet.getName(), tempPet.getAge()));
+                // Printing out the Pet row in the specified format using rowFormat()
+                System.out.println(rowFormat(id, tempPet.getName(), tempPet.getAge()));
+            }
+        }
+        // Else the table will be generated based off the parameter set of indices
+        else {
+            // If indices has items they will be printed to the screen
+            if (indices.size() > 0) {
+                // Using a forEach iterator to travers the indices ArrayList and print
+                // the correct Pet database Pet's to the screen
+                indices.forEach(e -> {
+                    // Temporary pet at the current index
+                    Pet tempPet = petDatabase.get(e);
+                    // Using rowFormat() method to print out the Pet row
+                    System.out.println(rowFormat(e, tempPet.getName(), tempPet.getAge()));
+                });
+            }
         }
 
-        // Ending the table with a breakLine and the number of rows in this set
+        // Ending the table with a breakLine
         System.out.println(breakLine);
-        System.out.println(petDatabase.size() + " rows in a set.\n");
+
+        // If the table was generated by the database set it will display the full
+        // set size
+        if (indices == null) {
+            System.out.println(petDatabase.size() + " row/s in a set.\n");
+        }
+        // Else the table was generated off a prescribed number of indices so the
+        // indices set size is displayed
+        else {
+            System.out.println(indices.size() + " row/s in a set.\n");
+        }
+    }
+
+
+    /**
+     * The overloaded displayPetTable() will accept a petDatabase and an
+     * String name as parameters. It will then make a recursive call to
+     * displayPetTable() after searching the Pet database for Pets that match
+     * the name. It will then print out every Pet in the database that match
+     * that name as well as display the total number of Pet objects found.
+     *
+     * @param petDatabase - ArrayList<Pet> database to print in a table.
+     * @param name - String name of the pets to print.
+     */
+    public static void displayPetTable(ArrayList<Pet> petDatabase, String name) {
+        // Initializing an ArrayList to hold the indices of the Pet objects where
+        // the name matches
+        ArrayList<Integer> indices = new ArrayList<>();
+
+        // Iterating through the petDatabase and comparing the name. If they
+        // match the index is added to the indices List
+        for (int id = 0; id < petDatabase.size(); id++) {
+            // Creating a temp variable to hold the current Pet for readability
+            Pet tempPet = petDatabase.get(id);
+
+            // If the name matches the parameter name, the index is added to indices.
+            // The comparison ignores case as described in the client requirments
+            if (tempPet.getName().equalsIgnoreCase(name)) {
+                indices.add(id);
+            }
+        }
+
+        // A recursive call is made to displayPetTable() with the new indices
+        // List and the Pets matching the indices list are printed to the screen
+        displayPetTable(petDatabase, indices);
     }
 
 
@@ -209,6 +329,8 @@ public class PetDatabase {
             System.out.println("What would you like to do?");
             System.out.println("1) View all pets");
             System.out.println("2) Add more pets");
+            System.out.println("5) Search pets by name");
+            System.out.println("6) Search pets by age");
             System.out.println("7) Exit the program");
             System.out.print("\nYour choice: ");
 
@@ -229,6 +351,39 @@ public class PetDatabase {
                 // Calling the addPets() method so the user can add Pet
                 // objects to the parameter passed petDatabase
                 addPets(petDatabase);
+            }
+            // Search by pet name
+            else if (userChoice == 5) {
+                // Initializing the name variable to hold the user entered String name
+                String name = "";
+
+                // Asking the user to enter the name
+                System.out.print("Enter a name to search: ");
+                // Saving the name and stripping off white space
+                name = input.next().strip();
+
+                // Clearing the Scanner and adding a newLine for formatting
+                input.nextLine();
+                System.out.println();
+
+                // Calling the displayPetTable() to display the pets in the
+                // table with the parameter name
+                displayPetTable(petDatabase, name);
+            }
+            // Search by pet age
+            else if (userChoice == 6) {
+                // Initializing the name variable to hold the user entered int age
+                int age = 0;
+
+                // Asking the user to enter the age
+                System.out.print("Enter age to search: ");
+
+                // Validating and saving the int age to age
+                age = intValidator("Please enter a valid int age: ");
+
+                // Calling the displayPetTable() to display the pets in the
+                // table with the parameter age
+                displayPetTable(petDatabase, age);
             }
         // The do/while loop will end when the user types the following value
         } while (userChoice != 7);
