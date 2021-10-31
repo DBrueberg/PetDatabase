@@ -70,8 +70,8 @@ public class PetDatabase {
         // The petDatabase will be an ArrayList<Pet>
         ArrayList<Pet> petDatabase = new ArrayList<>();
         // Test objects
-        petDatabase.add(new Pet("Harry", 4));
-        petDatabase.add(new Pet("Rob", 2));
+//        petDatabase.add(new Pet("Harry", 4));
+//        petDatabase.add(new Pet("Rob", 2));
 
         // Printing out the Program Title
         System.out.println("Pet Database Program.\n");
