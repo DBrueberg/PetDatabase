@@ -1,6 +1,6 @@
 ﻿# PetDatabase
 
-The PetDatabase was created as an assignment for my Software Engineering class at Concordia University St-Paul. 
+The PetDatabase was created as an assignment for my Software Engineering class at Concordia University St-Paul.<br 
 The required specifications are shown below. The version I created has full input validation. It is good to note 
 that this is a dynamic database.
 
