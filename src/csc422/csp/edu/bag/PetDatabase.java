@@ -14,6 +14,14 @@
  *  (DAB, 10/30/2021, Created overloaded methods for displayTable() that
  *  allow for the printing of tables based of a name or age search)
  *
+ * ****VERSION 3******
+ *  (DAB, 10/30/2021, Added in features to remove and update Pet objects
+ *  in the database)
+ *  (DAB, 10/30/2021, Changed the menu if/elseif to a cleaner case statement
+ *  and added final variables for better readability)
+ *  (DAB, 10/30/2021, Moved the Pet search features into their own methods
+ *  for better readability)
+ *
  * PetDatabase.java, Pet.java run together for Assignment 1 Part 2
  *
  */
@@ -42,6 +50,8 @@ import java.util.Scanner;
 public class PetDatabase {
     // Initializing Scanner object for the program
     public static Scanner input = new Scanner(System.in);
+
+    // Declaring final int variables to handle the menu selection
     public static final int VIEW_ALL_PETS = 1;
     public static final int ADD_PETS = 2;
     public static final int UPDATE_PET = 3;
@@ -384,88 +394,18 @@ public class PetDatabase {
                     break;
             }
 
-//            // View all Pets objects in table format
-//            if (userChoice == 1) {
-//                // Calling the displayPetTable() to display the Pet
-//                // objects currently in the database in a table
-//                displayPetTable(petDatabase);
-//            }
-//            // Add more Pet objects
-//            else if (userChoice == 2) {
-//                // Calling the addPets() method so the user can add Pet
-//                // objects to the parameter passed petDatabase
-//                addPets(petDatabase);
-//            }
-//            // Update an existing pet
-//            else if (userChoice == 3) {
-//
-//                updatePet(petDatabase);
-//
-//            }
-//            // Remove a pet
-//            else if (userChoice == 4) {
-//
-//                removePet(petDatabase);
-//
-//            }
-//            // Search by pet name
-//            else if (userChoice == 5) {
-//                // Initializing the name variable to hold the user entered String name
-//                String name = "";
-//
-//                // Asking the user to enter the name
-//                System.out.print("Enter a name to search: ");
-//                // Saving the name and stripping off white space
-//                name = input.next().strip();
-//
-//                // Clearing the Scanner and adding a newLine for formatting
-//                input.nextLine();
-//                System.out.println();
-//
-//                // Calling the displayPetTable() to display the pets in the
-//                // table with the parameter name
-//                displayPetTable(petDatabase, name);
-//            }
-//            // Search by pet age
-//            else if (userChoice == 6) {
-//                // Initializing the name variable to hold the user entered int age
-//                int age = 0;
-//
-//                // Asking the user to enter the age
-//                System.out.print("Enter age to search: ");
-//
-//                // Validating and saving the int age to age
-//                age = intValidator("Please enter a valid int age: ");
-//
-//                // newLine for formatting
-//                System.out.println();
-//
-//                // Calling the displayPetTable() to display the pets in the
-//                // table with the parameter age
-//                displayPetTable(petDatabase, age);
-//            }
         // The do/while loop will end when the user types the following value
         } while (userChoice != 7);
     }
 
-    public static void petNameSearch(ArrayList<Pet> petDatabase) {
-        // Initializing the name variable to hold the user entered String name
-        String name = "";
 
-        // Asking the user to enter the name
-        System.out.print("Enter a name to search: ");
-        // Saving the name and stripping off white space
-        name = input.next().strip();
-
-        // Clearing the Scanner and adding a newLine for formatting
-        input.nextLine();
-        System.out.println();
-
-        // Calling the displayPetTable() to display the pets in the
-        // table with the parameter name
-        displayPetTable(petDatabase, name);
-    }
-
+    /**
+     * The petAgeSearch() method will ask the user for a Pet age then
+     * search and return the results in a table format.
+     *
+     * @param petDatabase - The ArrayList<Pet> petDatabase to be used
+     *                    with the menu.
+     */
     public static void petAgeSearch(ArrayList<Pet> petDatabase) {
         // Initializing the name variable to hold the user entered int age
         int age = 0;
@@ -484,63 +424,30 @@ public class PetDatabase {
         displayPetTable(petDatabase, age);
     }
 
-    public static void removePet(ArrayList<Pet> petDatabase) {
-        displayPetTable(petDatabase);
 
-        if (petDatabase.size() == 0) {
-            System.out.println("Sorry there are no pets in the database\n");
-        }
-        else {
-            int id = 0;
+    /**
+     * The petNameSearch() method will ask the user for a Pet name then
+     * search and return the results in a table format.
+     *
+     * @param petDatabase - The ArrayList<Pet> petDatabase to be used
+     *                    with the menu.
+     */
+    public static void petNameSearch(ArrayList<Pet> petDatabase) {
+        // Initializing the name variable to hold the user entered String name
+        String name = "";
 
-            System.out.print("Enter the id of the pet you wish to delete: ");
+        // Asking the user to enter the name
+        System.out.print("Enter a name to search: ");
+        // Saving the name and stripping off white space
+        name = input.next().strip();
 
-            id = intValidator("Enter a valid id: ");
+        // Clearing the Scanner and adding a newLine for formatting
+        input.nextLine();
+        System.out.println();
 
-            if (id >= 0 && id < petDatabase.size()) {
-                Pet currentPet = petDatabase.get(id);
-                petDatabase.remove(id);
-                System.out.println(currentPet.getName() + " " + currentPet.getAge() + " is removed.\n");
-            }
-            else {
-                System.out.println("The pet id " + id + " does not exist.\n");
-            }
-
-        }
-    }
-
-    public static void updatePet(ArrayList<Pet> petDatabase) {
-        displayPetTable(petDatabase);
-
-        if (petDatabase.size() == 0) {
-            System.out.println("Sorry there are no pets in the database\n");
-        }
-        else {
-            int id = 0;
-
-            System.out.print("Enter the id of the pet you wish to update: ");
-
-            id = intValidator("Enter a valid id: ");
-
-            if (id >= 0 && id < petDatabase.size()) {
-                Pet currentPet = petDatabase.get(id);
-                String newName = "";
-                int newAge = 0;
-                String oldName = currentPet.getName();
-                int oldAge = currentPet.getAge();
-
-                System.out.print("Enter new name and new age (name age): ");
-                newName = input.next();
-                newAge = intValidator("Please enter a valid int age: ");
-
-                petDatabase.set(id, new Pet(newName, newAge));
-                System.out.println(oldName + " " + oldAge + " changed to " + newName + " " + newAge + ".\n");
-            }
-            else {
-                System.out.println("The pet id " + id + " does not exist.\n");
-            }
-
-        }
+        // Calling the displayPetTable() to display the pets in the
+        // table with the parameter name
+        displayPetTable(petDatabase, name);
     }
 
 
@@ -576,5 +483,112 @@ public class PetDatabase {
     public static String rowFormat(int id, String name, int age) {
         // Formatting the string to fit the Pet Table specifications and returning
         return String.format("| %3s | %-10s | %4s |", id, name, age);
+    }
+
+
+    /**
+     * The removePet() method will first display a table of all the
+     * Pet objects. It will then ask the user to pick a
+     * Pet id in order to remove the referenced Pet from the database.
+     *
+     * @param petDatabase - The ArrayList<Pet> petDatabase to be used
+     *                    with the menu.
+     */
+    public static void removePet(ArrayList<Pet> petDatabase) {
+        // Displaying the petDatabase table
+        displayPetTable(petDatabase);
+
+        // If there are no Pet objects in the database the user is notified
+        if (petDatabase.size() == 0) {
+            System.out.println("Sorry there are no pets in the database\n");
+        }
+        // Else the user is prompted for a Pet id which is then removed from the
+        // database
+        else {
+            // Initializing the id for user input
+            int id = 0;
+
+            // Asking the user to choose the Pet id they would like to delete
+            System.out.print("Enter the id of the pet you wish to delete: ");
+
+            // The user input id is validated
+            id = intValidator("Enter a valid id: ");
+
+            // If the user entered id is in the database the Pet is removed
+            if (id >= 0 && id < petDatabase.size()) {
+                // Creating a currentPet object for readability
+                Pet currentPet = petDatabase.get(id);
+
+                // Removing the Pet from the database
+                petDatabase.remove(id);
+
+                // Letting the user know the Pet was removed
+                System.out.println(currentPet.getName() + " " + currentPet.getAge() + " is removed.\n");
+            }
+            // Else the user is notified the Pet does not exist
+            else {
+                System.out.println("The pet id " + id + " does not exist.\n");
+            }
+        }
+    }
+
+
+    /**
+     * The updatePet() method will first display a table of all the
+     * Pet objects. It will then ask the user to pick a
+     * Pet id in order to update the referenced Pet from the database.
+     * The user will then enter the new Pet name and age. The existing Pet
+     * will then be updated in the database.
+     *
+     * @param petDatabase - The ArrayList<Pet> petDatabase to be used
+     *                    with the menu.
+     */
+    public static void updatePet(ArrayList<Pet> petDatabase) {
+        // Displaying the petDatabase table
+        displayPetTable(petDatabase);
+
+        // If there are no Pet objects in the database the user is notified
+        if (petDatabase.size() == 0) {
+            System.out.println("Sorry there are no pets in the database\n");
+        }
+        // Else the user is prompted for the Pet id to be updated in the database
+        else {
+            // Initializing the id for user input
+            int id = 0;
+
+            // Asking the user to select an int id
+            System.out.print("Enter the id of the pet you wish to update: ");
+
+            // The entered int id is validated and saved to id
+            id = intValidator("Enter a valid id: ");
+
+            // If the Pet id is in the database the Pet information is requested
+            // and the Pet is updated
+            if (id >= 0 && id < petDatabase.size()) {
+                // Saving the chosen pet to currentPet for readability
+                Pet currentPet = petDatabase.get(id);
+                // Initializing the variables that will hold the new name/age and
+                // ones that hold the old name/age
+                String newName = "";
+                int newAge = 0;
+                String oldName = currentPet.getName();
+                int oldAge = currentPet.getAge();
+
+                // Asking the user for the name and age to update the Pet
+                System.out.print("Enter new name and new age (name age): ");
+                newName = input.next();
+                newAge = intValidator("Please enter a valid int age: ");
+
+                // Updating the database with the new Pet data
+                petDatabase.set(id, new Pet(newName, newAge));
+
+                // Letting the user know the old pet data and the new data it was updated to
+                System.out.println(oldName + " " + oldAge + " changed to " + newName + " " + newAge + ".\n");
+            }
+            // Else the Pet does not exist in the database and the user is notified
+            else {
+                System.out.println("The pet id " + id + " does not exist.\n");
+            }
+        }
     }
 }

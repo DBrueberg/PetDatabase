@@ -3,6 +3,7 @@
  * Pet.java
  * October 25, 2021
  * Updated(Initials, Date, Changes):
+ *  (DAB, 10/30/2021, Added overridden clone() and equals() methods)
  *
  * PetDatabase.java, Pet.java run together for Assignment 1 Part 2
  *
@@ -20,6 +21,7 @@ public class Pet {
     private String name;
     private int age;
 
+
     /**
      * Default no arg constructor. Pet will have no name and an
      * age of 0.
@@ -29,6 +31,7 @@ public class Pet {
         this.name = "";
         this.age = 0;
     }
+
 
     /**
      * Overloaded Pet constructor that will construct a pet with
@@ -42,6 +45,7 @@ public class Pet {
         this.age = age;
     }
 
+
     /**
      * Accessor method for name.
      *
@@ -50,6 +54,7 @@ public class Pet {
     public String getName() {
         return name;
     }
+
 
     /**
      * Mutator method for name.
@@ -78,9 +83,54 @@ public class Pet {
         this.age = age;
     }
 
+
+    /**
+     * Adding in and overriding clone() functionality.
+     *
+     * @return
+     */
     @Override
     public Object clone() {
+        // The new Pet object is constructed that is the same as the old one
         Pet newPet = new Pet(this.getName(), this.getAge());
+        // returning the new Pet object
         return newPet;
+    }
+
+
+    /**
+     * Overriding Object's equals method so Pet objects can be compared.
+     * The equals method will be case sensitive.
+     *
+     * @param obj - Object to be tested.
+     * @return - true if equals, false if not.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        // If the object is null false is returned
+        if (obj == null) {
+            return false;
+        }
+
+        // If the objects are not the same class false is returned
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        // Casting object into Pet since the object must be Pet
+        Pet otherPet = (Pet) obj;
+
+        // If the names are not equal then false is returned
+        if (this.getName() == "" ? otherPet.getName() != null : !this.getName().equals(otherPet.getName())) {
+            return false;
+        }
+
+        // If the age is not equal then false is returned
+        if (this.getAge() == 0 ? otherPet.getAge() != 0 : !(this.getAge() == (otherPet.getAge()))) {
+            return false;
+        }
+
+        // Otherwise, the objects are equal
+        return true;
     }
 }
