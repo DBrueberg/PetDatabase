@@ -70,9 +70,10 @@ public class PetDatabase {
 //    public static final int PET_BY_NAME = 5;
 //    public static final int PET_BY_AGE = 6;
     public static final int END_PROGRAM = 4;
-
     // The name of the file that the pet database will be saved to
     public static final String PET_FILENAME = "petDatabase.txt";
+    // Setting the maximum allowed database size
+    public static final int MAX_DATABASE_SIZE = 5;
 
 
     /**
@@ -117,33 +118,75 @@ public class PetDatabase {
         // the Pet
         String name = "";
         int age = 0;
+        int petCounter = 0;
 
         // The Pet data will be input validated and will include a name and
         // age in the (name age) format
         do {
             // The user is asked to add a pet
             System.out.print("add pet (name age): ");
-            // Whitespace is taken off the first part of input and it is
-            // saved to the name
-            name = input.next().strip();
 
-            // If the name was not "done", an age will be accepted and the
-            // Pet will be added to the database after input validation
-            if (!name.equals("done")) {
-                // Calling the intValidator() method to validate that the
-                // user input is an int value for the age
-                age = intValidator("Second input must be an age: ");
+            // Tokenizing the user input
+            String[] petToken = (input.nextLine()).strip().split(" ");
 
-                // The name and age are used to construct and add a new Pet to
-                // the database
-                petDatabase.add(new Pet(name, age));
+            // Checking if the database is full. If it is, the user is notified and
+            // the addPets() is ended with the "done" sentinel value
+            if (petDatabase.size() >= MAX_DATABASE_SIZE) {
+                System.out.println("Error: Database is full.");
+                name = "done";
             }
+            // If the tokens (aka user entries) are only two then the Pet data
+            // will be processed and added
+            else if (petToken.length == 2) {
+                // Whitespace is taken off the first part of input and it is
+                // saved to the name
+                name = petToken[0].strip();
+
+                // If the name was not "done", an age will be accepted and the
+                // Pet will be added to the database after input validation
+                if (!name.equals("done")) {
+                    // Calling the intValidator() method to validate that the
+                    // user input is an int value for the age
+                    age = intValidator("Second input must be an age: ", petToken[1]);
+
+                    // The name and age are used to construct and add a new Pet to
+                    // the database
+                    petDatabase.add(new Pet(name, age));
+                    // Adding the Pet added to the current counter
+                    petCounter++;
+                }
+            }
+            // Else the user entries exceed the two allowed for a Pet additions so
+            // the user is notified or the addPets() method is terminated if "done"
+            // was an entry
+            else {
+                // If there is only one entry, it is checked to see if it was the sentry
+                // "done"
+                if (petToken.length == 1 && (petToken[0].strip()).equals("done")) {
+                    // The entry was "done" so it is saved to name to end the program
+                    name = petToken[0].strip();
+                }
+                // Else the entry is a mix of invalid arguments and the user is notified
+                else {
+                    System.out.print("Error: ");
+                    for (int i = 0; i < petToken.length; i++) {
+                        System.out.print(petToken[i] + " ");
+                    }
+                    System.out.println(" is not a valid input.");
+                }
+            }
+
         // While the name does not equal "done" the user will still be allowed
         // to enter more Pet objects
         } while (!name.equals("done"));
 
-        // Some format text to show that the pets are added
-        System.out.println("Pets added.\n");
+        // As long as a Pet was added and the database was not full, this message
+        // will display the amount of Pet's added to the database in the current
+        // addPet session
+        if (petCounter > 0 && petDatabase.size() <= 5) {
+            // Some format text to show that the pets are added
+            System.out.println(petCounter + " pets added.\n");
+        }
     }
 
 
@@ -313,21 +356,53 @@ public class PetDatabase {
      * @return - The validated int value.
      */
     public static int intValidator(String message) {
+        // Using recursion to call the overloaded intValidator() method with
+        // an empty string passed as the inputValue
+        return intValidator(message, "");
+    }
+
+
+    /**
+     * The overloaded intValidator() method will accept an error message and a String that will
+     * be checked for an int value. Either the String value will be converted to an int
+     * or the user will be requested to enter another value. If the input is not an int,
+     * then the user will be notified view the error message. When the value is determined to
+     * be of int value it is returned to the caller.
+     *
+     * @param message - Error message that will re-request the int value.
+     * @param inputValue - The String that will be checked for an int value.
+     * @return - The validated int value.
+     */
+    public static int intValidator(String message, String inputValue) {
         // The isInt sentinel value is set to false since there is no int value
         // entered by the user. TempInt is initialized to hold the entered int
         // value
         boolean isInt = false;
         int tempInt = 0;
 
+
         // While the value is not an int, the loop will continue to request the
         // user for an int value
         while (!isInt) {
             // Using a try/catch block to catch exceptions
             try {
-                // Attempting to grab the int value from the user input
-                tempInt = input.nextInt();
-                // If it is a valid int, isInt will be set to true
-                isInt = true;
+                // If else statement to work with inputValue if there it is not
+                // an empty string
+                if (inputValue.length() > 0) {
+                    tempInt = Integer.parseInt(inputValue);
+                    // If it is a valid int, isInt will be set to true
+                    isInt = true;
+                }
+                // Else inputValue is an emptyString so the user is prompted for an input
+                else {
+                    // Attempting to grab the int value from the user input
+                    tempInt = input.nextInt();
+                    // If it is a valid int, isInt will be set to true
+                    isInt = true;
+                    // Clearing any leftover data in the Scanner object
+                    input.nextLine();
+                }
+
             }
             // If there is an exception thrown
             catch (InputMismatchException e) {
@@ -336,10 +411,15 @@ public class PetDatabase {
                 System.out.print("\n" + message);
                 input.nextLine();
             }
+            // If there is a problem turning the inputValue into an int
+            catch (NumberFormatException e) {
+                // The user will be notified via the parameter message and the
+                // bad input will be cleared and requested again in the loop
+                System.out.print("\n" + message);
+                // inputValue is set to empty string to allow for more int requests
+                inputValue = "";
+            }
         }
-
-        // Clearing any leftover data in the Scanner object
-        input.nextLine();
 
         // Returning the valid int
         return tempInt;
