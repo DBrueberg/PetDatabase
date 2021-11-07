@@ -1,8 +1,10 @@
 /* Devin Brueberg
- * CSC 422 Assignment 1 Part 2
+ * CSC 422 Assignment 1 Part 2/
+ *  Assignment 2 Part 2
  * PetDatabase.java
  * October 25, 2021
  * Updated(Initials, Date, Changes):
+ * *******************ASSIGNMENT 1************************
  * *****VERSION 1******
  *  (DAB, 10/30/2021, Added features to view the Pet objects in a table)
  *  (DAB, 10/30/2021, Added features to add Pets to the database)
@@ -22,7 +24,13 @@
  *  (DAB, 10/30/2021, Moved the Pet search features into their own methods
  *  for better readability)
  *
- * PetDatabase.java, Pet.java run together for Assignment 1 Part 2
+ * *******************ASSIGNMENT 2************************
+ * *****MILESTONE 1*****
+ *  (DAB, 11/7/2021, Added load/save methods. The Pet objects in the List
+ *  will now be saved and read to/from a .txt file)
+ *
+ *
+ * PetDatabase.java, Pet.java run together for PetDatabase program
  *
  */
 
@@ -33,6 +41,7 @@ package csc422.csp.edu.bag;
 import csc422.csp.edu.impl.Pet;
 
 // Importing needed java packages for this program
+import java.io.*;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -59,6 +68,9 @@ public class PetDatabase {
     public static final int PET_BY_NAME = 5;
     public static final int PET_BY_AGE = 6;
 
+    // The name of the file that the pet database will be saved to
+    public static final String PET_FILENAME = "petDatabase.txt";
+
 
     /**
      * The main method of PetDatabase. This method will control the flow of
@@ -73,11 +85,18 @@ public class PetDatabase {
 //        petDatabase.add(new Pet("Harry", 4));
 //        petDatabase.add(new Pet("Rob", 2));
 
+        // Calling loadPetData() method to load in the Pet data from the
+        // file
+        loadPetData(petDatabase);
+
         // Printing out the Program Title
         System.out.println("Pet Database Program.\n");
 
         // Running the menu and passing in the petDatabase
         mainMenu(petDatabase);
+
+        // Saving the petDatabase to a .txt file by calling savePetData()
+        savePetData(petDatabase);
     }
 
 
@@ -325,6 +344,67 @@ public class PetDatabase {
 
 
     /**
+     * The loadPetData() method will load in Pet objects from a .txt file. The file must be
+     * formatted as follows, or it may throw an exception:
+     * Pet1 3
+     * Pet2 4
+     * Pet3 5
+     *
+     * @param petDatabase - An ArrayList<Pet> that will allow the newly constructed
+     *                    Pet objects  to be saved to.
+     */
+    public static void loadPetData(ArrayList<Pet> petDatabase) {
+        // Initializing a File with the .txt file name
+        File file = new File(PET_FILENAME);
+
+        // If the file exists, the data will be loaded from the file. If not, nothing
+        // happens here
+        if (file.exists()) {
+            // Using try-with-resources catch block to attempt to read the data in the file and
+            // using Scanner
+            try (Scanner inputFile = new Scanner(file)) {
+
+                // While the Scanner finds more data in the file it will be read
+                while (inputFile.hasNext()) {
+                    // Reading the file line by line and converting into tokens for
+                    // processing
+                    String[] petToken = (inputFile.nextLine()).split(" ");
+
+                    // The first token is the pet name String, while the second
+                    // is the int pet age
+                    String petName = petToken[0];
+                    int petAge = Integer.parseInt(petToken[1]);
+
+                    // Initializing and adding the Pet to the pet database
+                    petDatabase.add(new Pet(petName, petAge));
+                }
+            }
+            // Catching exceptions that were resulted from bad file format and letting
+            // the user know to check the file. The program will be terminated
+            // because data integrity is a critical exception
+            catch (NumberFormatException e) {
+                // Printing a general exception that will notify the user to check
+                // their .txt Pet data format and giving them the file name
+                System.out.println("\nThere was an error loading the file, " +
+                        "please check " + PET_FILENAME);
+                System.out.println("File format should be as follows: \n");
+                System.out.println("Pet1 10");
+                System.out.println("Pet2 5");
+                System.out.println("Pet3 4");
+
+                // This is a critical error so the program will terminate to preserve
+                // data integrity
+                System.exit(0);
+            }
+            // Catching all other exceptions using chaining
+            catch (Exception e) {
+                e.getMessage();
+            }
+        }
+    }
+
+
+    /**
      * The mainMenu() method will accept the petDatabase used as a
      * parameter. It will then allow the user to select from a number
      * of choices via entering an int value. The value) choice list
@@ -529,6 +609,46 @@ public class PetDatabase {
             else {
                 System.out.println("The pet id " + id + " does not exist.\n");
             }
+        }
+    }
+
+
+    /**
+     * The savePetData() method will save the Pet data to .txt file in
+     * String format as show below:
+     * Pet1 1
+     * Pet2 2
+     *
+     * @param petDatabase - An ArrayList<Pet> to hold Pet objects.
+     */
+    public static void savePetData(ArrayList<Pet> petDatabase) {
+        // Enclosing the BufferedWriter in try-with-resources catch block to load in
+        // a BufferedWriter FileWriter object, write to the file, then automatically close
+        // the object. Exceptions will be caught in the catch block
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(PET_FILENAME))) {
+            // Iterating through the petDatabase and saving each Pet to the file
+            petDatabase.forEach(pet -> {
+
+                // Using a try/catch block to write each Pet to a new line
+                try {
+                    // The value of Pet will be the overridden toString()
+                    writer.write(String.valueOf(pet));
+                    // Newline to indicate a new Pet
+                    writer.newLine();
+                }
+                // Catches any exceptions during writing and notifies the user
+                catch (Exception e) {
+                    System.out.println("Sorry there was an error writing " + pet + " to file.");
+                }
+
+            });
+        }
+        // Catches Exceptions during the writer object initialization
+        catch (Exception e) {
+            // Letting the user know there was an exception in the save and printing out
+            // the message
+            System.out.println("Sorry there was an issue with writing the pet database to file!\n");
+            e.getMessage();
         }
     }
 
