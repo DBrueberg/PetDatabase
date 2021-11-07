@@ -30,6 +30,12 @@
  *  will now be saved and read to/from a .txt file)
  *
  * *****MILESTONE 2*****
+ *  (DAB, 11/7/2021, Max pets in database now 5)
+ *  (DAB, 11/7/2021, Pet age is 1 - 20 inclusive)
+ *  (DAB, 11/7/2021, petAdd input must consist of 2 entries only)
+ *  (DAB, 11/7/2021, Menu choices limited to view all pets, add new pets, and
+ *  remove pets)
+ *  (DAB, 11/7/2021, Altered the look and feel of UI to match requested)
  *
  *
  * PetDatabase.java, Pet.java run together for PetDatabase program
@@ -145,15 +151,25 @@ public class PetDatabase {
                 // If the name was not "done", an age will be accepted and the
                 // Pet will be added to the database after input validation
                 if (!name.equals("done")) {
+
                     // Calling the intValidator() method to validate that the
                     // user input is an int value for the age
-                    age = intValidator("Second input must be an age: ", petToken[1]);
+                    age = intValidator("Age must be an int value of 1 to 20: ", petToken[1]);
 
-                    // The name and age are used to construct and add a new Pet to
-                    // the database
-                    petDatabase.add(new Pet(name, age));
-                    // Adding the Pet added to the current counter
-                    petCounter++;
+                    // Checking that the age is between 1 and 20
+                    if (age < 1 || age > 20) {
+                        // If it is not the user is notified and the Pet data is requested again
+                        System.out.println("Error: " + age + " is not a valid age.\n");
+                    }
+                    // Else the age is correct and it is entered into the database
+                    else {
+                        // The name and age are used to construct and add a new Pet to
+                        // the database
+                        petDatabase.add(new Pet(name, age));
+                        // Adding the Pet added to the current counter
+                        petCounter++;
+                    }
+
                 }
             }
             // Else the user entries exceed the two allowed for a Pet additions so
@@ -172,7 +188,7 @@ public class PetDatabase {
                     for (int i = 0; i < petToken.length; i++) {
                         System.out.print(petToken[i] + " ");
                     }
-                    System.out.println(" is not a valid input.");
+                    System.out.println(" is not a valid input.\n");
                 }
             }
 
@@ -408,14 +424,14 @@ public class PetDatabase {
             catch (InputMismatchException e) {
                 // The user will be notified via the parameter message and the
                 // bad input will be cleared and requested again in the loop
-                System.out.print("\n" + message);
+                System.out.print(message);
                 input.nextLine();
             }
             // If there is a problem turning the inputValue into an int
             catch (NumberFormatException e) {
                 // The user will be notified via the parameter message and the
                 // bad input will be cleared and requested again in the loop
-                System.out.print("\n" + message);
+                System.out.print(message);
                 // inputValue is set to empty string to allow for more int requests
                 inputValue = "";
             }
@@ -518,8 +534,6 @@ public class PetDatabase {
             // Requesting the int value from the user and validating it with
             // the intValidator() method
             userChoice = intValidator("Choice must be a valid int: ");
-            // Formatting line
-            System.out.println();
 
             // The switch statement will control the selected menu userChoice
             switch (userChoice) {
@@ -553,9 +567,18 @@ public class PetDatabase {
 //                    // the database using the Pet age
 //                    petAgeSearch(petDatabase);
 //                    break;
+                case END_PROGRAM:
+                    // Added to allow default to find bad menu selections or perform
+                    // pre-program termination functions
+                    break;
                 default:
+                    // Added in a menu error message to fit the general theme of the program
+                    System.out.println("Error: " + userChoice + " is not a valid menu selection.");
                     break;
             }
+
+            // Formatting line
+            System.out.println();
 
         // The do/while loop will end when the user types the following value
         } while (userChoice != END_PROGRAM);
@@ -690,7 +713,7 @@ public class PetDatabase {
             }
             // Else the user is notified the Pet does not exist
             else {
-                System.out.println("The pet id " + id + " does not exist.\n");
+                System.out.println("Error: ID " + id + " does not exist.\n");
             }
         }
     }
