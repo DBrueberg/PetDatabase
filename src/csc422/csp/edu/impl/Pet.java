@@ -4,6 +4,8 @@
  * October 25, 2021
  * Updated(Initials, Date, Changes):
  *  (DAB, 10/30/2021, Added overridden clone() and equals() methods)
+ *  (DAB, 11/7/2021, Implemented Serializable to save to file)
+ *  (DAB, 11/7/2021, Overrode Objects toString method)
  *
  * PetDatabase.java, Pet.java run together for Assignment 1 Part 2
  *
@@ -12,12 +14,18 @@
 // Package of this program
 package csc422.csp.edu.impl;
 
+import java.io.Serializable;
+
 /**
  * The Pet() class will allow the use of a Pet object that will hold
  * the name and age of the pet.
  *
  */
-public class Pet {
+public class Pet implements Serializable {
+    // Default serialVersion ID
+    private static final long serialVersionUID = 1L;
+
+    // Class Variables that make up the Pet Object
     private String name;
     private int age;
 
@@ -132,5 +140,17 @@ public class Pet {
 
         // Otherwise, the objects are equal
         return true;
+    }
+
+
+    /**
+     * Overriding the toString method in order to print out an object
+     * with a detailed pet information message.
+     *
+     * @return - String stating the pets name and age.
+     */
+    @Override
+    public String toString() {
+        return this.name + " " + this.age;
     }
 }
