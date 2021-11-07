@@ -36,6 +36,7 @@
  *  (DAB, 11/7/2021, Menu choices limited to view all pets, add new pets, and
  *  remove pets)
  *  (DAB, 11/7/2021, Altered the look and feel of UI to match requested)
+ *  (DAB, 11/7/2021, Final Error checks for MILESTONE 2: Fixed minor formatting issues)
  *
  *
  * PetDatabase.java, Pet.java run together for PetDatabase program
@@ -105,6 +106,9 @@ public class PetDatabase {
         // Running the menu and passing in the petDatabase
         mainMenu(petDatabase);
 
+        // Adding goodbye for UI requirements
+        System.out.println("Goodbye!");
+
         // Saving the petDatabase to a .txt file by calling savePetData()
         savePetData(petDatabase);
     }
@@ -138,7 +142,13 @@ public class PetDatabase {
             // Checking if the database is full. If it is, the user is notified and
             // the addPets() is ended with the "done" sentinel value
             if (petDatabase.size() >= MAX_DATABASE_SIZE) {
-                System.out.println("Error: Database is full.");
+                // Added extra if statement to match UI required formatting
+                if (petToken.length > 0 && !(petToken[0].strip()).equals("done")) {
+                    System.out.println("Error: Database is full.");
+                }
+
+                // Assigning "done" to name to end the addPets() method. Database
+                // only accepts the max database size of Pet objects
                 name = "done";
             }
             // If the tokens (aka user entries) are only two then the Pet data
@@ -201,8 +211,11 @@ public class PetDatabase {
         // addPet session
         if (petCounter > 0 && petDatabase.size() <= 5) {
             // Some format text to show that the pets are added
-            System.out.println(petCounter + " pets added.\n");
+            System.out.println(petCounter + " pet/s added.");
         }
+
+        // New line for formatting
+        System.out.println();
     }
 
 
@@ -535,6 +548,8 @@ public class PetDatabase {
             // the intValidator() method
             userChoice = intValidator("Choice must be a valid int: ");
 
+            System.out.println();
+
             // The switch statement will control the selected menu userChoice
             switch (userChoice) {
                 case VIEW_ALL_PETS:
@@ -578,7 +593,7 @@ public class PetDatabase {
             }
 
             // Formatting line
-            System.out.println();
+//            System.out.println();
 
         // The do/while loop will end when the user types the following value
         } while (userChoice != END_PROGRAM);
@@ -695,10 +710,10 @@ public class PetDatabase {
             int id = 0;
 
             // Asking the user to choose the Pet id they would like to delete
-            System.out.print("Enter the id of the pet you wish to delete: ");
+            System.out.print("Enter the pet ID to remove: ");
 
             // The user input id is validated
-            id = intValidator("Enter a valid id: ");
+            id = intValidator("Enter a valid int id: ");
 
             // If the user entered id is in the database the Pet is removed
             if (id >= 0 && id < petDatabase.size()) {
