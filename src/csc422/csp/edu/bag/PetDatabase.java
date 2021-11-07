@@ -29,6 +29,8 @@
  *  (DAB, 11/7/2021, Added load/save methods. The Pet objects in the List
  *  will now be saved and read to/from a .txt file)
  *
+ * *****MILESTONE 2*****
+ *
  *
  * PetDatabase.java, Pet.java run together for PetDatabase program
  *
@@ -63,10 +65,11 @@ public class PetDatabase {
     // Declaring final int variables to handle the menu selection
     public static final int VIEW_ALL_PETS = 1;
     public static final int ADD_PETS = 2;
-    public static final int UPDATE_PET = 3;
-    public static final int REMOVE_PET = 4;
-    public static final int PET_BY_NAME = 5;
-    public static final int PET_BY_AGE = 6;
+//    public static final int UPDATE_PET = 3;
+    public static final int REMOVE_PET = 3;
+//    public static final int PET_BY_NAME = 5;
+//    public static final int PET_BY_AGE = 6;
+    public static final int END_PROGRAM = 4;
 
     // The name of the file that the pet database will be saved to
     public static final String PET_FILENAME = "petDatabase.txt";
@@ -423,13 +426,13 @@ public class PetDatabase {
         do {
             // Printing out the menu for the user to choose from
             System.out.println("What would you like to do?");
-            System.out.println("1) View all pets");
-            System.out.println("2) Add more pets");
-            System.out.println("3) Update an existing pet");
-            System.out.println("4) Remove an existing pet");
-            System.out.println("5) Search pets by name");
-            System.out.println("6) Search pets by age");
-            System.out.println("7) Exit the program");
+            System.out.println(VIEW_ALL_PETS + ") View all pets");
+            System.out.println(ADD_PETS + ") Add more pets");
+//            System.out.println(UPDATE_PET + ") Update an existing pet");
+            System.out.println(REMOVE_PET + ") Remove an existing pet");
+//            System.out.println(PET_BY_NAME + ") Search pets by name");
+//            System.out.println(PET_BY_AGE + ") Search pets by age");
+            System.out.println(END_PROGRAM + ") Exit the program");
             System.out.print("\nYour choice: ");
 
             // Requesting the int value from the user and validating it with
@@ -450,32 +453,32 @@ public class PetDatabase {
                     // objects to the parameter passed petDatabase
                     addPets(petDatabase);
                     break;
-                case UPDATE_PET:
-                    // Calling the updatePet() method so the user can update
-                    // a Pet in the database by referencing the Pet id
-                    updatePet(petDatabase);
-                    break;
+//                case UPDATE_PET:
+//                    // Calling the updatePet() method so the user can update
+//                    // a Pet in the database by referencing the Pet id
+//                    updatePet(petDatabase);
+//                    break;
                 case REMOVE_PET:
                     // Calling the removePet() method so the user can remove
                     // a Pet in the database by referencing the Pet id
                     removePet(petDatabase);
                     break;
-                case PET_BY_NAME:
-                    // Calling the petNameSearch() method so the user can search
-                    // the database using the Pet name
-                    petNameSearch(petDatabase);
-                    break;
-                case PET_BY_AGE:
-                    // Calling the petAgeSearch() method so the user can search
-                    // the database using the Pet age
-                    petAgeSearch(petDatabase);
-                    break;
+//                case PET_BY_NAME:
+//                    // Calling the petNameSearch() method so the user can search
+//                    // the database using the Pet name
+//                    petNameSearch(petDatabase);
+//                    break;
+//                case PET_BY_AGE:
+//                    // Calling the petAgeSearch() method so the user can search
+//                    // the database using the Pet age
+//                    petAgeSearch(petDatabase);
+//                    break;
                 default:
                     break;
             }
 
         // The do/while loop will end when the user types the following value
-        } while (userChoice != 7);
+        } while (userChoice != END_PROGRAM);
     }
 
 
